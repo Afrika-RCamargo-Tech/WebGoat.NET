@@ -1,0 +1,43 @@
+name: Veracode Scan - Teste WebGoat.NET
+
+# Colocar este arquivo em .github/workflows/ no repositorio WebGoat.NET
+# (fork em Afrika-RCamargo-Tech). O template fica em repositorio separado
+# (veracode-template-workflow), chamado via uses cross-repo.
+#
+# Ajustar "veracode-template-workflow" abaixo se voce nomear o repo do
+# template de forma diferente.
+#
+# Secrets necessarios neste repositorio, o WebGoat.NET, que e o caller
+# (Settings > Secrets and variables > Actions):
+#   VID  - Veracode API ID   (conta de teste/sandbox, NAO a da AlmaWave)
+#   VKEY - Veracode API Key  (idem)
+#   SCA  - token do agente SCA (SRCCLR_API_TOKEN), idem
+#
+# Nota: com secrets: inherit, os secrets vem do repositorio que CHAMA
+# (WebGoat.NET), nao precisa cadastrar nada no repo do template.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  pipeline-scan:
+    if: github.event_name == 'pull_request'
+    uses: Afrika-RCamargo-Tech/veracode-template-workflow/.github/workflows/veracode-dotnet-hosted-test.yml@main
+    with:
+      scan-type: pipeline
+      solution-path: "WebGoat.NET.sln"
+      project-path: "WebGoat/WebGoat.NET.csproj"
+      project-name: ""
+    secrets: inherit
+
+  policy-scan:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    uses: Afrika-RCamargo-Tech/veracode-template-workflow/.github/workflows/veracode-dotnet-hosted-test.yml@main
+    with:
+      scan-type: policy
+      solution-path: "WebGoat.NET.sln"
+      project-path: "WebGoat/WebGoat.NET.csproj"
+      project-name: ""
+    secrets: inherit
