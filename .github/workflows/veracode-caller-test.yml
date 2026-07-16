@@ -19,7 +19,7 @@ name: Veracode Scan - Teste WebGoat.NET
 on:
   pull_request:
   push:
-    branches: [main]
+    branches: [master]
 
 jobs:
   pipeline-scan:
@@ -33,7 +33,7 @@ jobs:
     secrets: inherit
 
   policy-scan:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     uses: Afrika-RCamargo-Tech/veracode-template-workflow/.github/workflows/veracode-dotnet-hosted-test.yml@main
     with:
       scan-type: policy
